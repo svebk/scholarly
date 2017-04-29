@@ -27,15 +27,15 @@ class TestScholarly(unittest.TestCase):
         self.assertIn(u'Steven A. Cholewiak', authors)
 
     def test_multiple_authors(self):
-        ''' As of November 18, 2016, there are 29 'Zucker's, 3 pages worth '''
+        ''' As of April 28, 2017, there are 30 'Zucker's, 3 pages worth '''
         authors = [a.name for a in scholarly.search_author('Zucker')]
-        self.assertEqual(len(authors), 29)
+        self.assertEqual(len(authors), 30)
         self.assertIn(u'Steven W Zucker', authors)
 
     def test_multiple_publications(self):
-        ''' As of November 18, 2016 there are 12 pubs that fit the search term'''
+        ''' As of Apr 28, 2017 there are 9 pubs that fit the search term'''
         pubs = [p.bib['title'] for p in scholarly.search_pubs_query('cholewiak campbell robson')]
-        self.assertEqual(len(pubs), 12)
+        self.assertEqual(len(pubs), 9)
         self.assertIn(u'A frequency-domain analysis of haptic gratings', pubs)
 
     def test_publication_contents(self):
@@ -46,7 +46,7 @@ class TestScholarly(unittest.TestCase):
         self.assertTrue(pub.bib['pages'] == u'3--14')
         self.assertTrue(pub.bib['publisher'] == u'IEEE')
         self.assertTrue(pub.bib['title'] == u'A frequency-domain analysis of haptic gratings')
-        self.assertTrue(pub.bib['url'] == u'http://ieeexplore.ieee.org/xpls/abs_all.jsp?arnumber=5210096')
+        self.assertTrue(pub.bib['url'] == u'http://ieeexplore.ieee.org/abstract/document/5210096/')
         self.assertTrue(pub.bib['volume'] == u'3')
         self.assertTrue(pub.bib['year'] == u'2010')
 
