@@ -164,7 +164,7 @@ class Publication(object):
 
     def fill(self):
         """Populate the Publication with information from its profile"""
-        if self.source == 'citations':
+        if self.source == 'citations' or self.source =='pub_page':
             url = _CITATIONPUB.format(self.id_citations)
             soup = _get_soup(_HOST+url)
             self.bib['title'] = soup.find('div', id='gsc_title').text
@@ -173,10 +173,13 @@ class Publication(object):
             for item in soup.find_all('div', class_='gs_scl'):
                 key = item.find(class_='gsc_field').text
                 val = item.find(class_='gsc_value')
+                #print('{},{}'.format(key,val))
                 if key == 'Authors':
                     self.bib['author'] = ' and '.join([i.strip() for i in val.text.split(',')])
                 elif key == 'Journal':
                     self.bib['journal'] = val.text
+                elif key == 'Conference':
+                    self.bib['conference'] = val.text
                 elif key == 'Volume':
                     self.bib['volume'] = val.text
                 elif key == 'Issue':
@@ -186,13 +189,17 @@ class Publication(object):
                 elif key == 'Publisher':
                     self.bib['publisher'] = val.text
                 elif key == 'Publication date':
-                    self.bib['year'] = arrow.get(val.text).year
+                    # arrow.get('2012').year gives 1970
+                    self.bib['year'] = arrow.get(val.text, 'YYYY').year
                 elif key == 'Description':
-                    if val.text[0:8].lower() == 'abstract':
-                        val = val.text[9:].strip()
+                    val = val.get_text()
+                    # when is this happening?
+                    #elif val.text[0:8].lower() == 'abstract':
+                    #    val = val.text[9:].strip()
                     self.bib['abstract'] = val
                 elif key == 'Total citations':
                     self.id_scholarcitedby = re.findall(_SCHOLARPUBRE, val.a['href'])[0]
+                #print(self.bib)
             if soup.find('div', class_='gsc_title_ggi'):
                 self.bib['eprint'] = soup.find('div', class_='gsc_title_ggi').a['href']
                 #self.bib['eprint'] = _HOST + soup.find('div', class_='gsc_title_ggi').a['href']
